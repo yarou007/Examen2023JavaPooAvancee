@@ -58,18 +58,28 @@ public class Client {
     public void setNb_lits_res(int nb_lits_res) {
         this.nb_lits_res = nb_lits_res;
     }
-
-
-  public boolean equals(Client autre){
-    if     (Objects.equals(this.nom, autre.nom) && 
-            Objects.equals(this.prenom, autre.nom) && 
-            Objects.equals(this.adresse, autre.nom)){
-                                                          return true; // shyraja3 true w yokhrej :p 
-      }
-       return false; // else 
-  }
-    
-    
+//
+//
+//  public boolean equals(Client autre){
+//    if     (Objects.equals(this.nom, autre.nom) && 
+//            Objects.equals(this.prenom, autre.nom) && 
+//            Objects.equals(this.adresse, autre.nom)){
+//                                                          return true; // shyraja3 true w yokhrej :p 
+//      }
+//       return false; // else 
+//  }
+//    
+//    Question 1 )
+   @Override
+    public boolean equals (Object obj){
+        if (this==obj){
+            return true;
+        }
+        if(getClass()!=obj.getClass()) return false;
+        if(obj==null) return false;
+        Client cl = (Client) obj;
+        return (Objects.equals(this.nom, cl.nom) && Objects.equals(this.prenom, cl.prenom) && Objects.equals(this.adresse, cl.adresse));
+    }
 
     @Override
     public String toString() {

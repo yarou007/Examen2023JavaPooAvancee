@@ -16,16 +16,27 @@ public class Examen2023 {
     public static void main(String[] args) {
         
         Hotel h1 = new Hotel();
-        Chambre ch1 = new Chambre(1, 2, "libre");
-        Chambre ch2 = new Chambre(2, 2, "libre");
-        Chambre ch3 = new Chambre(3, 2, "libre");
- 
+//        Chambre ch1 = new Chambre(1, 2, "libre");
+//        Chambre ch2 = new Chambre(2, 2, "libre");
+//        Chambre ch3 = new Chambre(3, 2, "libre");
+//          
 //        Client cl1 = new Client("Yassine", "Hammi", "Wardeya", 2);
-//         h1.createClient(cl1);   
+//        Client cl2 = new Client("Daly", "Saidi", "Zahrouni", 1);
+//        h1.createClient(cl1);
+//        h1.createClient(cl2);
+//        h1.createChambre(ch2);
+//        h1.createChambre(ch3);
+//        h1.Reserver(cl1, ch3);
+//        h1.TransferVers(cl1, ch3,ch2);
+//        h1.Reserver(cl2, ch3);
+//        h1.Afficher();
+        h1.findByNum(1);
+         
 //         Client cl2 = new Client("Ahmed", "Ahmed", "Ahmed", 1);
 //         h1.createClient(cl2);
-             // Reservation pour cl1 to ch1
+//           //   Reservation pour cl1 to ch1
 //          h1.Reserver(cl1, ch1);
+          
 
 
 

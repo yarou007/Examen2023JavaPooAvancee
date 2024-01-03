@@ -12,41 +12,51 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.sql.*;
+import java.util.TreeSet;
 
 /**
  *
  * @author 21655
  */
 public class Hotel {
+    
     private Set<Client> set_client;
     private List<Chambre> list_chambre;
     private Map<Client,Chambre> map_reservation;
+    
     Connection cx = null;
+    
     public Hotel(){
         set_client= new HashSet<Client>();
         list_chambre=new ArrayList<Chambre>();
         map_reservation = new HashMap<Client,Chambre>();
        }
-   
+    
+   public void createClient(Client c){
+       set_client.add(c);
+   }
     
     // connexion method behs maghyr ma nokeed naawed feha pas mal de fois 
     public void connexionDB(){
           try {
+              
             Class.forName("com.mysql.cj.jdbc.Driver");
              cx = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel", "root", "manager");
+        
           }catch (ClassNotFoundException ex) {
             System.out.println("Driver not loading");
-        } catch (SQLException x) {
+          
+          } catch (SQLException x) {
             System.out.println(x.getMessage() + " SQL EXCEPTION");
         }
     }
      // creation chambre ( statique mel lowel mbaad nekhdem base de donneés ) 
     public void createChambre(Chambre ch){
-       /* insertion hard-coding 
+       // insertion hard-coding 
          list_chambre.add(ch);
-     */ 
+      
        // database stuff 
-       
+//       
      try{
             connexionDB();
              String req = " insert into chambre values (?,?,?) ";
@@ -56,6 +66,7 @@ public class Hotel {
              pstm.setString(3, ch.getEtat());
              if (pstm.executeUpdate()!=0) System.out.println("insertion avec succes  ");
              else System.out.println("Probleme d'insertion ");
+             
         } catch (SQLException x) {
             System.out.println(x.getMessage() + " SQL EXCEPTION");
         }
@@ -84,7 +95,9 @@ public class Hotel {
              connexionDB();
              String req = " select * from chambre where numCh=? ";
              PreparedStatement pstm = cx.prepareStatement(req);
+             
              pstm.setInt(1, numCh);
+             
              ResultSet res = pstm.executeQuery();
              while(res.next()){
                  System.out.println(res.getInt(1)+ " "+res.getInt(2)+" "+res.getString(3) );
@@ -94,10 +107,16 @@ public class Hotel {
             System.out.println(x.getMessage() + " SQL EXCEPTION");
         }
     }
-    
+    // methode 1 
     public boolean existeClient( Client cl){
-        return set_client.contains(cl);
+        for (Client client : set_client) {
+            if(cl.getNom().equals(client.getNom()))
+                return true;
+        }
+        return false;
     }
+    
+    
     public boolean existeChambre(int numChambre){
         for (Chambre chambre : list_chambre) {
             if(chambre.getNum_chambre()==numChambre)
@@ -105,6 +124,7 @@ public class Hotel {
         }
       return false;
     }
+    
     public boolean verifDispo(Chambre ch, int nblits){
       if   (existeChambre(ch.getNum_chambre())){    // 2          -       1 =1
            if (ch.getEtat().equals("libre" ) &&  (ch.getNb_lits_disp()>=nblits) ){
@@ -113,11 +133,14 @@ public class Hotel {
         }
          return false;   
     }
+    
     public boolean Reserver(Client cl,Chambre ch) {
        if(map_reservation.containsKey(cl)){
            return false;
        }
+       
     try{
+        
         if(verifDispo(ch, cl.getNb_lits_res())){
             ch.setEtat("reservee");
              
@@ -137,21 +160,26 @@ public class Hotel {
     
     
     public boolean annulerReservation(Client cl){
-        if (!existeClient(cl)) return false;
+        if (!map_reservation.containsKey(cl)) return false;
+        
         try{
             if(cl==null){
                 throw new NullPointerException("Client est null :p");
             }
+            
             else{
                 Chambre ch = map_reservation.get(cl);
                 ch.setEtat("libre");
                 ch.setNb_lits_disp(ch.getNb_lits_disp()+cl.getNb_lits_res());
                 map_reservation.remove(cl);
+                return true;
             }
+            
         }catch(NullPointerException ex){
             System.out.println(ex.getMessage());
         }
-        return true;
+        
+        return false;
     }
     
     
@@ -163,7 +191,7 @@ public class Hotel {
 //     
       if(verifDispo(ch2, cl.getNb_lits_res())){
             ch1.setEtat("libre");
-            //ch2.setEtat("reservee");
+          //  ch2.setEtat("reservee");
             ch1.setNb_lits_disp(ch1.getNb_lits_disp()+cl.getNb_lits_res());
               map_reservation.remove(cl);
             Reserver(cl, ch2);
@@ -177,14 +205,21 @@ public class Hotel {
     public void Afficher(){
       System.out.println("Client : ");
         set_client.forEach(System.out::println);
+        
         System.out.println("Chambre: ");
+        
         list_chambre.forEach(System.out::println);
+        
+        
          System.out.println("Reservation");
+         
         Set paires = map_reservation.entrySet();
-        Iterator<Map.Entry<Client,Chambre>> iter = paires.iterator();
+        
+        Iterator< Map.Entry<Client,Chambre> > iter = paires.iterator();
+        
         while(iter.hasNext()){
               Map.Entry paire=iter.next();
-              System.out.println(paire.getKey()+"\n"+paire.getValue());
+              System.out.println(paire.getKey()+":"+paire.getValue());
           }
     }
 }

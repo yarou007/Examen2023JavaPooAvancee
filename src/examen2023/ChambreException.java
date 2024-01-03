@@ -9,6 +9,7 @@ package examen2023;
  * @author 21655
  */
 public class ChambreException extends Exception{
+    
     private Chambre chambre;
 
     public ChambreException(String message, Chambre chambre) {
